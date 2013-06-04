@@ -29,8 +29,11 @@
         var me = this;
 
         load_user(couch_url, username, function(err, user){
+            if (err) return alert('cant load user: ' + err);
 
-            var groups = removeUsedGroups(options.groups, user.groups);
+
+            var rng = splitRolesAndGroups(user);
+            var available_groups = removeUsedGroups(options.groups, rng.groups);
 
             me.view = new Ractive({
                 el: elem,
@@ -38,40 +41,39 @@
                 data: {
                     user: user,
                     options: options,
-                    groups: groups
+                    roles: rng.roles,
+                    groups : rng.groups,
+                    available_groups: available_groups
                 }
             });
 
             me.view.on('remove-role', function(event, el){
                 var index = el.getAttribute('data-index');
-                user.roles.splice(index, 1);
-                me.view.update( 'user' );
-                return false;
+                rng.roles.splice(index, 1);
+                me.view.update( 'roles' );
             });
 
             me.view.on('add-role', function(){
                 var role = $('input.addRole').val();
-                user.roles.push(role);
-                me.view.update( 'user' );
+                rng.roles.push(role);
+                me.view.update( 'roles' );
                 $('input.addRole').val('').focus();
             });
 
             me.view.on('remove-group', function(event, el){
                 var index = el.getAttribute('data-index');
-                user.groups.splice(index, 1);
-                me.view.update( 'user' );
+                rng.groups.splice(index, 1);
+                me.view.update( 'groups' );
 
-                me.view.set('groups', removeUsedGroups(options.groups, user.groups));
-
-                return false;
+                me.view.set('available_groups', removeUsedGroups(options.groups, rng.groups));
             });
 
             me.view.on('add-group', function(){
                 var group = $('select.addGroup').val();
-                user.groups.push(group);
-                me.view.update( 'user' );
+                rng.groups.push(group);
+                me.view.update( 'groups' );
 
-                me.view.set('groups', removeUsedGroups(options.groups, user.groups));
+                me.view.set('available_groups', removeUsedGroups(options.groups, rng.groups));
 
                 $('input.addGroup').val('').focus();
             });
@@ -79,7 +81,20 @@
 
 
             me.view.on('save', function() {
-                console.log(user);
+                user.email = $('input.email').val();
+                user.roles =[];
+                rng.groups.forEach(function(group){
+                    user.roles.push('group.' + group);
+                });
+                rng.roles.forEach(function(role){
+                    user.roles.push(role);
+                });
+
+                save_user(couch_url, username, user, function(err, data){
+                    if (err) return alert('Could not save user: ' + err);
+                    user._rev = data.rev;
+                    $('.success').show().hide(3000);
+                });
             });
 
         });
@@ -92,39 +107,31 @@
         var results = [];
         groups.forEach(function(group){
             for (var i = used.length - 1; i >= 0; i--) {
-                if (used[i] === group) return
-            };
+                if (used[i] === group) return;
+            }
             results.push(group);
         });
         return results;
     }
 
+    function splitRolesAndGroups(user) {
+        // split the groups and roles out
+        var result = {
+            roles: [],
+            groups: []
+        }
+        user.roles.forEach(function(role){
+            if (role.indexOf('group.') === 0) result.groups.push(role.substring(6));
+            else result.roles.push(role);
+        });
+        return result;
+    }
 
     function load_user(couch_url, username, callback) {
-        couchr.get(couch_url + '/_users/' + username, function(err, user){
-            if (err) return callback(err);
-            // split the groups and roles out
-            var roles = [];
-            user.groups = [];
-            user.roles.forEach(function(role){
-                if (role.indexOf('group.') === 0) user.groups.push(role.substring(6));
-                else roles.push(role);
-            });
-            user.roles = roles;
-            callback(null, user);
-        });
+        couchr.get(couch_url + '/_users/' + username, callback);
     }
-
-
-    function submit($elem, editor, emitter, cb) {
-
+    function save_user(couch_url, username, user, callback) {
+        couchr.put(couch_url + '/_users/' + username, user, callback);
     }
-
-    function render_err($elem, msg) {
-    }
-
-    function clear_err($elem) {
-    }
-
 
 }));

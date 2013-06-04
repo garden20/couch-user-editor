@@ -1,47 +1,49 @@
  <div class="form">
-    <fieldset>
 
-      <label>Name</label>
-      <input type="text" value="{{user.name}}" />
+    <h1>{{user.name}}</h1>
+    <fieldset>
 
 
       <label>Email</label>
-      <input type="text" value="{{user.email}}" />
+      <input type="text" value="{{user.email}}" class="email"/>
 
 
       {{#options.show_groups}}
 
         <h3>Groups</h3>
         <ul class="groups">
-          {{#user.groups:num}}
-             <li>{{.}} <button class="btn btn-small"  data-index="{{num}}" proxy-click="remove-group">×</button></li>
-          {{/user.groups}}
+          {{#groups:num}}
+             <li>{{.}} <a style="cursor: pointer;"  data-index="{{num}}" proxy-click="remove-group">×</a></li>
+          {{/groups}}
         </ul>
 
-        {{#groups.length}}
-          <select class="addGroup">
-            {{#groups}}
-              <option value="{{.}}">{{.}}</option>
-            {{/groups}}
-          </select>
-          <button class="btn" proxy-click="add-group">Add Group</button>
-        {{/groups.length}}
+        {{#available_groups.length}}
+          <div class="control-group">
+            <select class="addGroup" style="margin-bottom: 0;">
+              {{#available_groups}}
+                <option value="{{.}}">{{.}}</option>
+              {{/available_groups}}
+            </select>
+            <button class="btn" proxy-click="add-group">Add Group</button>
+          </div>
+        {{/available_groups.length}}
 
       {{/options.show_groups}}
 
       <h3>Roles</h3>
       <ul class="roles">
-        {{#user.roles:num}}
-           <li>{{.}} <button class="btn btn-small"  data-index="{{num}}" proxy-click="remove-role">×</button></li>
-        {{/user.roles}}
+        {{#roles:num}}
+           <li>{{.}} <a style="cursor: pointer;"  data-index="{{num}}" proxy-click="remove-role">×</a></li>
+        {{/roles}}
       </ul>
-      <input type="text" class="addRole" /> <button class="btn" proxy-click="add-role">Add Role</button>
+      <input type="text" class="addRole" style="margin-bottom: 0;"/> <button class="btn" proxy-click="add-role">Add Role</button>
 
 
 
     </fieldset>
 
     <fieldset class="form-actions">
-        <button class="btn primary" proxy-click="save">Save</button>
+        <button class="btn btn-primary" proxy-click="save">Save</button>
+        <span style="display: none; color=green" class="success">Saved!</span>
     </fieldset>
 </div>
