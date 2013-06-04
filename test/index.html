@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+  </head>
+
+  <body >
+      <div id="editor">
+
+      </div>
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="jam/require.js"></script>
+    <script type="text/javascript">
+
+        var user = window.location.search;
+
+        if (user) user = user.substring(1);
+
+        console.log('user', user);
+
+        require(['../couchdb-user-editor'], function (Editor) {
+            new Editor('http://localhost:5984', 'org.couchdb.user:' + user, '#editor', {
+                show_groups: true,
+                groups: ['HR', 'accounting', 'finance']
+            });
+        });
+    </script>
+  </body>
+</html>

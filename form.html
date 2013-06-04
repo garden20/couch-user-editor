@@ -1,0 +1,47 @@
+ <div class="form">
+    <fieldset>
+
+      <label>Name</label>
+      <input type="text" value="{{user.name}}" />
+
+
+      <label>Email</label>
+      <input type="text" value="{{user.email}}" />
+
+
+      {{#options.show_groups}}
+
+        <h3>Groups</h3>
+        <ul class="groups">
+          {{#user.groups:num}}
+             <li>{{.}} <button class="btn btn-small"  data-index="{{num}}" proxy-click="remove-group">×</button></li>
+          {{/user.groups}}
+        </ul>
+
+        {{#groups.length}}
+          <select class="addGroup">
+            {{#groups}}
+              <option value="{{.}}">{{.}}</option>
+            {{/groups}}
+          </select>
+          <button class="btn" proxy-click="add-group">Add Group</button>
+        {{/groups.length}}
+
+      {{/options.show_groups}}
+
+      <h3>Roles</h3>
+      <ul class="roles">
+        {{#user.roles:num}}
+           <li>{{.}} <button class="btn btn-small"  data-index="{{num}}" proxy-click="remove-role">×</button></li>
+        {{/user.roles}}
+      </ul>
+      <input type="text" class="addRole" /> <button class="btn" proxy-click="add-role">Add Role</button>
+
+
+
+    </fieldset>
+
+    <fieldset class="form-actions">
+        <button class="btn primary" proxy-click="save">Save</button>
+    </fieldset>
+</div>
