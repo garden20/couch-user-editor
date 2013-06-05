@@ -35,18 +35,20 @@
                 groups: ['HR', 'accounting', 'finance'],
                 appdata: [
                 {
+                    id: "dasdasdasdas",
                     title: 'kujua-base',
                     db: 'kujua-base',
                     ddoc: 'kujua-base',
                     user_data: {
-                        global: true,
+                        db_prefix: false,
                         schema: {
                             descripton: "Kujua Lite",
                             type: 'object',
                             properties: {
                                 facility_id: {
                                     title: "Facility Id",
-                                    type: "string"
+                                    type: "string",
+                                    "je:hint": "autocomplete"
                                 }
                             }
                         }

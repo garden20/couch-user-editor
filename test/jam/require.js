@@ -2017,6 +2017,16 @@ var jam = {
             "main": "dist/jquery.js"
         },
         {
+            "name": "jquery.lego",
+            "location": "jam/jquery.lego",
+            "main": "jquery.lego.js"
+        },
+        {
+            "name": "json.edit",
+            "location": "jam/json.edit",
+            "main": "json.edit.js"
+        },
+        {
             "name": "ractive",
             "location": "jam/ractive",
             "main": "Ractive.js"
@@ -2050,6 +2060,16 @@ if (typeof require !== "undefined" && require.config) {
             "main": "dist/jquery.js"
         },
         {
+            "name": "jquery.lego",
+            "location": "jam/jquery.lego",
+            "main": "jquery.lego.js"
+        },
+        {
+            "name": "json.edit",
+            "location": "jam/json.edit",
+            "main": "json.edit.js"
+        },
+        {
             "name": "ractive",
             "location": "jam/ractive",
             "main": "Ractive.js"
@@ -2080,6 +2100,16 @@ else {
             "name": "jquery",
             "location": "jam/jquery",
             "main": "dist/jquery.js"
+        },
+        {
+            "name": "jquery.lego",
+            "location": "jam/jquery.lego",
+            "main": "jquery.lego.js"
+        },
+        {
+            "name": "json.edit",
+            "location": "jam/json.edit",
+            "main": "json.edit.js"
         },
         {
             "name": "ractive",

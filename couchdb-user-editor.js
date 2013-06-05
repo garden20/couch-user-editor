@@ -5,6 +5,7 @@
             'ractive',
             'couchr',
             'events',
+            "json.edit",
             'text!./form.html'
         ],factory);
     } else {
@@ -15,12 +16,13 @@
                 root.ractive,
                 root.couchr,
                 root.events,
+                root.JsonEdit,
                 form_t
             );
         });
 
     }
-}(this, function ($, Ractive, couchr, events, form_t) {
+}(this, function ($, Ractive, couchr, events, jsonEdit, form_t) {
 
     return editUser;
 
@@ -90,6 +92,11 @@
                     user.roles.push(role);
                 });
 
+                if (options.appdata) {
+                    var newData = processAppData(options);
+                    $.extend(user, newData);
+                }
+
                 save_user(couch_url, username, user, function(err, data){
                     if (err) return alert('Could not save user: ' + err);
                     user._rev = data.rev;
@@ -97,6 +104,7 @@
                 });
             });
 
+            setupAppData(options, user);
         });
     }
 
@@ -125,6 +133,51 @@
             else result.roles.push(role);
         });
         return result;
+    }
+
+    function setupAppData(options, user) {
+        if (!options.appdata) return;
+
+        options.appdata.forEach(function(data){
+            var path = user;
+            if (data.user_data.db_prefix) path = user[data.db];
+
+            data.user_data.schema ['default'] = path;
+            data.editor = JsonEdit(data.id, data.user_data.schema);
+        });
+    }
+
+    function processAppData(options) {
+        var newData = {};
+
+        options.appdata.forEach(function(data){
+            var path = newData;
+            if (data.user_data.db_prefix) {
+                newData[data.db] = {};
+                path = newData[data.db];
+            }
+            var app_data = data.editor.collect();
+            if (!app_data.result.ok) {
+
+            } else {
+                $.extend(path, app_data.data);
+            }
+        });
+
+        // safety first
+        delete newData._id;
+        delete newData._rev;
+        delete newData.email;
+        delete newData.name;
+        delete newData.password_sha;
+        delete newData.roles;
+        delete newData.salt;
+        delete newData.type;
+        delete newData.derived_key;
+        delete newData.iterations;
+        delete newData.password_scheme;
+
+        return newData;
     }
 
     function load_user(couch_url, username, callback) {
