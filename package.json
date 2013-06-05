@@ -7,7 +7,8 @@
     "ractive": null,
     "jquery": null,
     "couchr": null,
-    "text": null
+    "text": null,
+    "json.edit": null
   },
   "repository": {
     "type": "git",
